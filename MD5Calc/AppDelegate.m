@@ -1,12 +1,13 @@
 //
 //  AppDelegate.m
-//  MD5Calc
+//  test
 //
-//  Created by Lancy on 10/10/12.
+//  Created by Lancy on 8/10/12.
 //  Copyright (c) 2012 Lancy. All rights reserved.
 //
 
 #import "AppDelegate.h"
+#import "NSString+MD5Calculator.h"
 
 @implementation AppDelegate
 
@@ -14,5 +15,13 @@
 {
     // Insert code here to initialize your application
 }
+
+- (IBAction)pushButton:(id)sender {
+    NSData *data = [self.textField.stringValue dataUsingEncoding:NSStringEncodingConversionAllowLossy];
+    
+    [self.systemTextView setString:[NSString MD5StringFromData:data]];
+    [self.myTextView setString:[NSString MD5StringFromDataUseMyImplementation:data]];
+}
+
 
 @end
