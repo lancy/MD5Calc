@@ -17,7 +17,9 @@
 }
 
 - (IBAction)pushButton:(id)sender {
-    NSData *data = [self.textField.stringValue dataUsingEncoding:NSStringEncodingConversionAllowLossy];
+    NSData *data = [self.inputTextView.textStorage.string dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSLog(@"%@", data);
     
     [self.systemTextView setString:[NSString MD5StringFromData:data]];
     [self.myTextView setString:[NSString MD5StringFromDataUseMyImplementation:data]];

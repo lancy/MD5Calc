@@ -17,6 +17,10 @@
 #define H(x, y, z) ((x) ^ (y) ^ (z))
 #define I(x, y, z) ((y) ^ ((x) | (~z)))
 
+/* ROTATE_LEFT rotates x left n bits.
+ */
+#define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
+
 
 @implementation NSString (MD5Calculator)
 
@@ -39,8 +43,8 @@
 {
     
     NSLog(@"Step 1 append padded");
-    NSUInteger bitsLength = data.length * 8;
-    NSUInteger appendLength = (448 - bitsLength % 512) / 8;
+    uint64_t bitsLength = data.length * 8;
+    uint64_t appendLength = (448 - bitsLength % 512) / 8;
     NSMutableData *newData = [data mutableCopy];
     NSLog(@"before = %@", newData);
     
@@ -54,8 +58,7 @@
     NSLog(@"After = %@", newData);
     
     NSLog(@"Step 2 append length");
-    uint64_t appendLengt = bitsLength;
-    [newData appendBytes:&appendLength length:sizeof(int64_t)];
+    [newData appendBytes:&bitsLength length:sizeof(uint64_t)];
     NSLog(@"After = %@", newData);
     
 
@@ -64,7 +67,7 @@
         7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
         5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
         4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
-        6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,
+        6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21
     };
     
     //Use binary integer part of the sines of integers as constants:
@@ -92,11 +95,7 @@
         0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476
     };
     
-//    uint32_t h0 = 0x67452301;   //A
-//    uint32_t h1 = 0xefcdab89;   //B
-//    uint32_t h2 = 0x98badcfe;   //C
-//    uint32_t h3 = 0x10325476;   //D
-    
+    // for each 512-bit (64-byte)
     for (int i = 0; i < newData.length; i += 64) {
         uint32_t w[16];
         NSRange range = {i, 64};
@@ -125,7 +124,7 @@
             uint32_t temp = d;
             d = c;
             c = b;
-            b = b + leftrotate((a + f + k[j] + w[g]), r[j]);
+            b += ROTATE_LEFT((a + f + k[j] + w[g]), r[j]);
             a = temp;
         }
         
@@ -136,6 +135,7 @@
     }
     
     NSData *resultData = [NSData dataWithBytes:h length:16];
+    NSLog(@"Result Data = %@", resultData);
     unsigned char result[16];
     [resultData getBytes:result];
     
@@ -149,10 +149,6 @@
 
 }
 
-//leftrotate function definition
-int32_t leftrotate(int32_t x, int32_t c) {
-    return (x << c);
-}
 
 
 
