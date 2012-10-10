@@ -14,6 +14,7 @@
 		BF3F673016248DD700FE906C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3F672F16248DD700FE906C /* AppDelegate.m */; };
 		BF3F673316248DD700FE906C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF3F673116248DD700FE906C /* MainMenu.xib */; };
 		BF3F675516248E4500FE906C /* NSString+MD5Calculator.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3F675316248E4500FE906C /* NSString+MD5Calculator.m */; };
+		BF3F67571625386800FE906C /* Decepticons (Alt).icns in Resources */ = {isa = PBXBuildFile; fileRef = BF3F67561625386800FE906C /* Decepticons (Alt).icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		BF3F673216248DD700FE906C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		BF3F675316248E4500FE906C /* NSString+MD5Calculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5Calculator.m"; sourceTree = "<group>"; };
 		BF3F675416248E4500FE906C /* NSString+MD5Calculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5Calculator.h"; sourceTree = "<group>"; };
+		BF3F67561625386800FE906C /* Decepticons (Alt).icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "Decepticons (Alt).icns"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +51,7 @@
 		BF3F670D16248DD700FE906C = {
 			isa = PBXGroup;
 			children = (
+				BF3F67561625386800FE906C /* Decepticons (Alt).icns */,
 				BF3F672216248DD700FE906C /* MD5Calc */,
 				BF3F671B16248DD700FE906C /* Frameworks */,
 				BF3F671916248DD700FE906C /* Products */,
@@ -161,6 +164,7 @@
 				BF3F672716248DD700FE906C /* InfoPlist.strings in Resources */,
 				BF3F672D16248DD700FE906C /* Credits.rtf in Resources */,
 				BF3F673316248DD700FE906C /* MainMenu.xib in Resources */,
+				BF3F67571625386800FE906C /* Decepticons (Alt).icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
