@@ -10,10 +10,13 @@
 #import <CommonCrypto/CommonDigest.h>
 
 
-#define INIT_DATA_A (unsigned long)0x67452301L
-#define INIT_DATA_B (unsigned long)0xefcdab89L
-#define INIT_DATA_C (unsigned long)0x98badcfeL
-#define INIT_DATA_D (unsigned long)0x10325476L
+/* F, G, H and I are basic MD5 functions.
+ */
+#define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
+#define G(x, y, z) (((x) & (z)) | ((y) & (~z)))
+#define H(x, y, z) ((x) ^ (y) ^ (z))
+#define I(x, y, z) ((y) ^ ((x) | (~z)))
+
 
 @implementation NSString (MD5Calculator)
 
@@ -21,6 +24,8 @@
 {
     unsigned char result[16];
     CC_MD5( data.bytes, (unsigned int)data.length, result ); // This is the md5 call
+    NSData *resultData = [NSData dataWithBytes:result length:16];
+    NSLog(@"resultData(CC) = %@", resultData);
     return [NSString stringWithFormat:
             @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
             result[0], result[1], result[2], result[3],
@@ -49,13 +54,13 @@
     NSLog(@"After = %@", newData);
     
     NSLog(@"Step 2 append length");
-    int64_t appendLengt = bitsLength;
+    uint64_t appendLengt = bitsLength;
     [newData appendBytes:&appendLength length:sizeof(int64_t)];
     NSLog(@"After = %@", newData);
     
 
     //r specifies the per-round shift amounts
-    unsigned int r[64] = {
+    uint32_t r[64] = {
         7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
         5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
         4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
@@ -63,7 +68,7 @@
     };
     
     //Use binary integer part of the sines of integers as constants:
-    unsigned int k[64] = {
+    uint32_t k[64] = {
         0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
         0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
         0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -81,8 +86,72 @@
         0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
         0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
     };
+    
+    //Initialize magic number:
+    uint32 h[4] = {
+        0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476
+    };
+    
+//    uint32_t h0 = 0x67452301;   //A
+//    uint32_t h1 = 0xefcdab89;   //B
+//    uint32_t h2 = 0x98badcfe;   //C
+//    uint32_t h3 = 0x10325476;   //D
+    
+    for (int i = 0; i < newData.length; i += 64) {
+        uint32_t w[16];
+        NSRange range = {i, 64};
+        [newData getBytes:w range:range];
+        
+        uint32_t a = h[0];
+        uint32_t b = h[1];
+        uint32_t c = h[2];
+        uint32_t d = h[3];
+        // loop
+        for (int j = 0; j < 64; j++) {
+            uint32_t f, g;
+            if (j < 16) {
+                f = F(b, c, d);
+                g = j;
+            } else if (j < 32) {
+                f = G(b, c, d);
+                g = (5 * j + 1) % 16;
+            } else if (j < 48) {
+                f = H(b, c, d);
+                g = (3 * j + 5) % 16;
+            } else {
+                f = I(b, c, d);
+                g = (7 * j) % 16;
+            }
+            uint32_t temp = d;
+            d = c;
+            c = b;
+            b = b + leftrotate((a + f + k[j] + w[g]), r[j]);
+            a = temp;
+        }
+        
+        h[0] += a;
+        h[1] += b;
+        h[2] += c;
+        h[3] += d;
+    }
+    
+    NSData *resultData = [NSData dataWithBytes:h length:16];
+    unsigned char result[16];
+    [resultData getBytes:result];
+    
+    return [NSString stringWithFormat:
+            @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+            result[0], result[1], result[2], result[3],
+            result[4], result[5], result[6], result[7],
+            result[8], result[9], result[10], result[11],
+            result[12], result[13], result[14], result[15]
+            ];
 
-    return [[NSString alloc] initWithData:newData encoding:NSStringEncodingConversionAllowLossy];
+}
+
+//leftrotate function definition
+int32_t leftrotate(int32_t x, int32_t c) {
+    return (x << c);
 }
 
 
