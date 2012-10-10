@@ -44,7 +44,13 @@
     
     NSLog(@"Step 1 append padded");
     uint64_t bitsLength = data.length * 8;
-    uint64_t appendLength = (448 - bitsLength % 512) / 8;
+    uint64_t appendLength;
+    if (bitsLength % 512 <= 448) {
+        appendLength = (448 - bitsLength % 512) / 8;
+    } else {
+        appendLength = (448 + (512 - bitsLength % 512)) / 8;
+    }
+    
     NSMutableData *newData = [data mutableCopy];
     NSLog(@"before = %@", newData);
     

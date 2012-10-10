@@ -85,8 +85,8 @@
 		BF3F672216248DD700FE906C /* MD5Calc */ = {
 			isa = PBXGroup;
 			children = (
-				BF3F675316248E4500FE906C /* NSString+MD5Calculator.m */,
 				BF3F675416248E4500FE906C /* NSString+MD5Calculator.h */,
+				BF3F675316248E4500FE906C /* NSString+MD5Calculator.m */,
 				BF3F672E16248DD700FE906C /* AppDelegate.h */,
 				BF3F672F16248DD700FE906C /* AppDelegate.m */,
 				BF3F673116248DD700FE906C /* MainMenu.xib */,
